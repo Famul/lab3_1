@@ -7,8 +7,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +38,7 @@ public class AddProductCommandHandlerTest {
     private Reservation reservation;
     private ProductBuilder productBuilder;
     private AddProductCommandBuilder commandBuilder;
+    private ReservationBuilder reservationBuilder;
     private Product product;
     private Client client;
 
@@ -51,7 +50,8 @@ public class AddProductCommandHandlerTest {
         suggestionService = mock(SuggestionService.class);
         ClientData clientData = new ClientData(Id.generate(), "");
         client = new Client();
-        reservation = new Reservation(Id.generate(), Reservation.ReservationStatus.OPENED, clientData, new Date());
+        reservationBuilder = new ReservationBuilder();
+        reservation = reservationBuilder.build();
         productBuilder = new ProductBuilder();
         product = productBuilder.withPrice(new Money(10)).withName("Dostepny").build();
 
