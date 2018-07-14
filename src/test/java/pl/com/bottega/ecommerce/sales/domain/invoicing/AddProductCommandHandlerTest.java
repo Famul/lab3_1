@@ -39,6 +39,7 @@ public class AddProductCommandHandlerTest {
     private ProductRepository productRepository;
     private Reservation reservation;
     private ProductBuilder productBuilder;
+    private AddProductCommandBuilder commandBuilder;
     private Product product;
     private Client client;
 
@@ -55,7 +56,8 @@ public class AddProductCommandHandlerTest {
         product = productBuilder.withPrice(new Money(10)).withName("Dostepny").build();
 
         productHandler = new AddProductCommandHandler();
-        addProductCommand = new AddProductCommand(Id.generate(), Id.generate(), 2);
+        commandBuilder = new AddProductCommandBuilder();
+        addProductCommand = commandBuilder.withQuantity(6).build();
 
         when(clientRepository.load(any(Id.class))).thenReturn(client);
         when(reservationRepository.load(any(Id.class))).thenReturn(reservation);
@@ -93,8 +95,7 @@ public class AddProductCommandHandlerTest {
     public void handlingUnavailableProductShouldCallSuggestionService() {
         product.markAsRemoved();
         Product newProduct = productBuilder.ofType(ProductType.FOOD).build();
-        when(suggestionService.suggestEquivalent(product, client))
-                .thenReturn(new Product(Id.generate(), new Money(2), "nowy", ProductType.STANDARD));
+        when(suggestionService.suggestEquivalent(product, client)).thenReturn(newProduct);
 
         productHandler.handle(addProductCommand);
         verify(suggestionService, times(1)).suggestEquivalent(product, client);
