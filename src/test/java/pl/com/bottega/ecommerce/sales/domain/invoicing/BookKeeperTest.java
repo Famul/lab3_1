@@ -20,20 +20,21 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 public class BookKeeperTest {
 
-    InvoiceFactory invoiceFactory;
-    InvoiceRequest invoiceRequest;
-    TaxPolicy taxPolicy;
-    BookKeeper bookKeeper;
-    ProductData productData;
+    private InvoiceFactory invoiceFactory;
+    private InvoiceRequest invoiceRequest;
+    private TaxPolicy taxPolicy;
+    private BookKeeper bookKeeper;
+    private ProductData productData;
 
     @Before
     public void setUp() throws Exception {
         taxPolicy = mock(TaxPolicy.class);
         Tax tax = new Tax(new Money(5), "");
         when(taxPolicy.calculateTax(any(ProductType.class), any(Money.class))).thenReturn(tax);
-        ClientData client = mock(ClientData.class);
+        ClientData client = new ClientData(Id.generate(), "Jan Nowak");
         invoiceRequest = new InvoiceRequest(client);
-        productData = mock(ProductData.class);
+        ProductBuilder productBuilder = new ProductBuilder();
+        productData = productBuilder.buildProductData();
 
         invoiceFactory = mock(InvoiceFactory.class);
         when(invoiceFactory.create(any(ClientData.class)))
